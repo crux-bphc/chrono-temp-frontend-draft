@@ -708,7 +708,7 @@ const View = () => {
                         {timetableGrid.map((e) =>
                           e !== null ? (
                             <div
-                              className={`hover:bg-slate-500/90 cursor-pointer transition duration-200 ease-in-out bg-slate-600 rounded-lg ${
+                              className={`bg-slate-600 rounded-lg ${
                                 isVertical
                                   ? "h-fit pl-3 pb-2 pt-1"
                                   : "pl-3 pb-2 pt-2"
