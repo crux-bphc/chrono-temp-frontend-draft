@@ -3,4 +3,4 @@ services:
     build: .
     container_name: frontend
     ports:
-      - "3002:80"
+      - "3003:80"
