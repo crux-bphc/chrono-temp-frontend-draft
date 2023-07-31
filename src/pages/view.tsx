@@ -707,30 +707,21 @@ const View = () => {
                       >
                         {timetableGrid.map((e) =>
                           e !== null ? (
-                            <Tooltip delayDuration={100}>
-                              <TooltipTrigger asChild>
-                                <div
-                                  className={`hover:bg-slate-500/90 cursor-pointer transition duration-200 ease-in-out bg-slate-600 rounded-lg ${
-                                    isVertical
-                                      ? "h-fit pl-3 pb-2 pt-1"
-                                      : "pl-3 pb-2 pt-2"
-                                  }`}
-                                >
-                                  <div className="flex h-full text-sm flex-col">
-                                    <span className="font-bold">
-                                      {e.code} {e.type}
-                                      {e.number}
-                                    </span>
-                                    <span className="text-slate-300">
-                                      {e.room}
-                                    </span>
-                                  </div>
-                                </div>
-                              </TooltipTrigger>
-                              <TooltipContent className="bg-slate-900 text-slate-50 border-slate-800">
-                                Double click to remove section
-                              </TooltipContent>
-                            </Tooltip>
+                            <div
+                              className={`hover:bg-slate-500/90 cursor-pointer transition duration-200 ease-in-out bg-slate-600 rounded-lg ${
+                                isVertical
+                                  ? "h-fit pl-3 pb-2 pt-1"
+                                  : "pl-3 pb-2 pt-2"
+                              }`}
+                            >
+                              <div className="flex h-full text-sm flex-col">
+                                <span className="font-bold">
+                                  {e.code} {e.type}
+                                  {e.number}
+                                </span>
+                                <span className="text-slate-300">{e.room}</span>
+                              </div>
+                            </div>
                           ) : (
                             <div
                               className={`bg-slate-900 rounded-lg h-fit ${
