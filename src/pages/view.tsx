@@ -324,98 +324,101 @@ const View = () => {
                             {degree}
                           </Badge>
                         ))}
-                        {userInfoCookie["userInfo"].id ===
-                          timetableDetails.authorId && (
-                          <>
-                            <Tooltip delayDuration={100}>
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <TooltipTrigger asChild>
-                                    <Button className="ml-2 mt-[-0.5rem] duration-300 rounded-full bg-slate-950 hover:bg-slate-700">
-                                      <Pencil className="w-6 h-4" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent className="bg-slate-800 p-8 border-slate-700 ring-slate-700 ring-offset-slate-700">
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle className="font-bold text-2xl text-slate-50">
-                                      Are you sure?
-                                    </AlertDialogTitle>
-                                    <AlertDialogDescription className="text-lg text-slate-300">
-                                      Attempting to edit this finished timetable
-                                      will mark it as draft.{" "}
-                                      <span className="font-bold text-red-400">
-                                        People with the link will no longer be
-                                        able to view this timetable until you
-                                        publish it again.
-                                      </span>
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel className="bg-slate-800 hover:bg-slate-700/60 hover:text-slate-200 text-slate-200 border-slate-500 ring-slate-500 ring-offset-slate-500">
-                                      Cancel
-                                    </AlertDialogCancel>
-                                    <AlertDialogAction
-                                      className="bg-slate-50 text-slate-900 hover:bg-slate-200 border-slate-200 ring-slate-200 ring-offset-slate-200"
-                                      onClick={() => {
-                                        makeTimetableDraft(
-                                          timetableDetails.name,
-                                          timetableDetails.private,
-                                          id as string
-                                        );
-                                      }}
-                                    >
-                                      Continue
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                              <TooltipContent className="bg-slate-900 text-slate-50 border-slate-800">
-                                Edit Timetable
-                              </TooltipContent>
-                            </Tooltip>
-                            <Tooltip delayDuration={100}>
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <TooltipTrigger asChild>
-                                    <Button className="ml-2 mt-[-0.5rem] duration-300 rounded-full bg-slate-950 hover:bg-red-900/60">
-                                      <Trash className="w-6 h-4 text-red-400" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent className="bg-slate-800 p-8 border-slate-700 ring-slate-700 ring-offset-slate-700">
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle className="font-bold text-2xl text-slate-50">
-                                      Are you sure?
-                                    </AlertDialogTitle>
-                                    <AlertDialogDescription className="text-lg text-slate-300">
-                                      <span className="font-bold text-red-300">
-                                        People with the link will no longer be
-                                        able to view this timetable.
-                                      </span>
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel className="bg-slate-800 hover:bg-slate-700/60 hover:text-slate-200 text-slate-200 border-slate-500 ring-slate-500 ring-offset-slate-500">
-                                      Cancel
-                                    </AlertDialogCancel>
-                                    <AlertDialogAction
-                                      className="text-red-50 bg-red-900 hover:bg-red-700 border-red-200 ring-red-200 ring-offset-red-200"
-                                      onClick={() => {
-                                        deleteTimetable(id as string);
-                                      }}
-                                    >
-                                      Delete
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                              <TooltipContent className="bg-slate-900 text-slate-50 border-slate-800">
-                                Delete Timetable
-                              </TooltipContent>
-                            </Tooltip>
-                          </>
-                        )}
+                        {userInfoCookie["userInfo"] &&
+                          "id" in userInfoCookie["userInfo"] &&
+                          typeof userInfoCookie["userInfo"].id === "string" &&
+                          userInfoCookie["userInfo"].id ===
+                            timetableDetails.authorId && (
+                            <>
+                              <Tooltip delayDuration={100}>
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <TooltipTrigger asChild>
+                                      <Button className="ml-2 mt-[-0.5rem] duration-300 rounded-full bg-slate-950 hover:bg-slate-700">
+                                        <Pencil className="w-6 h-4" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent className="bg-slate-800 p-8 border-slate-700 ring-slate-700 ring-offset-slate-700">
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle className="font-bold text-2xl text-slate-50">
+                                        Are you sure?
+                                      </AlertDialogTitle>
+                                      <AlertDialogDescription className="text-lg text-slate-300">
+                                        Attempting to edit this finished
+                                        timetable will mark it as draft.{" "}
+                                        <span className="font-bold text-red-400">
+                                          People with the link will no longer be
+                                          able to view this timetable until you
+                                          publish it again.
+                                        </span>
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel className="bg-slate-800 hover:bg-slate-700/60 hover:text-slate-200 text-slate-200 border-slate-500 ring-slate-500 ring-offset-slate-500">
+                                        Cancel
+                                      </AlertDialogCancel>
+                                      <AlertDialogAction
+                                        className="bg-slate-50 text-slate-900 hover:bg-slate-200 border-slate-200 ring-slate-200 ring-offset-slate-200"
+                                        onClick={() => {
+                                          makeTimetableDraft(
+                                            timetableDetails.name,
+                                            timetableDetails.private,
+                                            id as string
+                                          );
+                                        }}
+                                      >
+                                        Continue
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                                <TooltipContent className="bg-slate-900 text-slate-50 border-slate-800">
+                                  Edit Timetable
+                                </TooltipContent>
+                              </Tooltip>
+                              <Tooltip delayDuration={100}>
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <TooltipTrigger asChild>
+                                      <Button className="ml-2 mt-[-0.5rem] duration-300 rounded-full bg-slate-950 hover:bg-red-900/60">
+                                        <Trash className="w-6 h-4 text-red-400" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent className="bg-slate-800 p-8 border-slate-700 ring-slate-700 ring-offset-slate-700">
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle className="font-bold text-2xl text-slate-50">
+                                        Are you sure?
+                                      </AlertDialogTitle>
+                                      <AlertDialogDescription className="text-lg text-slate-300">
+                                        <span className="font-bold text-red-300">
+                                          People with the link will no longer be
+                                          able to view this timetable.
+                                        </span>
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel className="bg-slate-800 hover:bg-slate-700/60 hover:text-slate-200 text-slate-200 border-slate-500 ring-slate-500 ring-offset-slate-500">
+                                        Cancel
+                                      </AlertDialogCancel>
+                                      <AlertDialogAction
+                                        className="text-red-50 bg-red-900 hover:bg-red-700 border-red-200 ring-red-200 ring-offset-red-200"
+                                        onClick={() => {
+                                          deleteTimetable(id as string);
+                                        }}
+                                      >
+                                        Delete
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                                <TooltipContent className="bg-slate-900 text-slate-50 border-slate-800">
+                                  Delete Timetable
+                                </TooltipContent>
+                              </Tooltip>
+                            </>
+                          )}
                       </div>
                     </div>
                   </div>
