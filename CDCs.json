@@ -155,7 +155,7 @@
       "BIO F214",
       "ECON/MGTS F211/F211"
     ],
-    "2-1": ["BIO F241", "BIO F242", "BIO F243", "BIO F244", "BITS F225"],
+    "2-2": ["BIO F241", "BIO F242", "BIO F243", "BIO F244", "BITS F225"],
     "3-1": ["BIO F311", "BIO F312", "BIO F313"],
     "3-2": ["BIO F341", "BIO F342", "BIO F215"]
   },
@@ -168,7 +168,7 @@
       "BIO F214",
       "ECON/MGTS F211/F211"
     ],
-    "2-1": ["BIO F241", "BIO F242", "BIO F243", "BIO F244", "BITS F225"],
+    "2-2": ["BIO F241", "BIO F242", "BIO F243", "BIO F244", "BITS F225"],
     "3-1": [
       "BIO F311",
       "BIO F312",
@@ -199,7 +199,7 @@
       "BIO F214",
       "ECON/MGTS F211/F211"
     ],
-    "2-1": ["BIO F241", "BIO F242", "BIO F243", "BIO F244", "BITS F225"],
+    "2-2": ["BIO F241", "BIO F242", "BIO F243", "BIO F244", "BITS F225"],
     "3-1": [
       "BIO F311",
       "BIO F312",
@@ -230,7 +230,7 @@
       "BIO F214",
       "ECON/MGTS F211/F211"
     ],
-    "2-1": ["BIO F241", "BIO F242", "BIO F243", "BIO F244", "BITS F225"],
+    "2-2": ["BIO F241", "BIO F242", "BIO F243", "BIO F244", "BITS F225"],
     "3-1": [
       "BIO F311",
       "BIO F312",
@@ -261,7 +261,7 @@
       "BIO F214",
       "ECON/MGTS F211/F211"
     ],
-    "2-1": ["BIO F241", "BIO F242", "BIO F243", "BIO F244", "BITS F225"],
+    "2-2": ["BIO F241", "BIO F242", "BIO F243", "BIO F244", "BITS F225"],
     "3-1": [
       "BIO F311",
       "BIO F312",
@@ -292,7 +292,7 @@
       "BIO F214",
       "ECON/MGTS F211/F211"
     ],
-    "2-1": ["BIO F241", "BIO F242", "BIO F243", "BIO F244", "BITS F225"],
+    "2-2": ["BIO F241", "BIO F242", "BIO F243", "BIO F244", "BITS F225"],
     "3-1": [
       "BIO F311",
       "BIO F312",
@@ -322,7 +322,7 @@
       "BIO F214",
       "ECON/MGTS F211/F211"
     ],
-    "2-1": ["BIO F241", "BIO F242", "BIO F243", "BIO F244", "BITS F225"],
+    "2-2": ["BIO F241", "BIO F242", "BIO F243", "BIO F244", "BITS F225"],
     "3-1": [
       "BIO F311",
       "BIO F312",
@@ -353,7 +353,7 @@
       "BIO F214",
       "ECON/MGTS F211/F211"
     ],
-    "2-1": ["BIO F241", "BIO F242", "BIO F243", "BIO F244", "BITS F225"],
+    "2-2": ["BIO F241", "BIO F242", "BIO F243", "BIO F244", "BITS F225"],
     "3-1": [
       "BIO F311",
       "BIO F312",
