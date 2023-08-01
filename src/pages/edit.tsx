@@ -369,6 +369,8 @@ const Edit = () => {
     const json = await res.json();
     if (res.status === 200) {
       await fetchTimetableDetails();
+      setInteractable(true);
+      return true;
     } else if (res.status === 401) {
       navigate("/login");
     } else if (
@@ -407,6 +409,8 @@ const Edit = () => {
     const json = await res.json();
     if (res.status === 200) {
       await fetchTimetableDetails();
+      setInteractable(true);
+      return true;
     } else if (res.status === 401) {
       navigate("/login");
     } else if (res.status === 404 || res.status === 403 || res.status === 418) {
@@ -461,7 +465,7 @@ const Edit = () => {
           }
         ].length > 0
       ) {
-        await removeCourseSection(
+        const success = await removeCourseSection(
           selectedSections[
             type as keyof {
               L: { type: string; id: string }[];
@@ -470,19 +474,44 @@ const Edit = () => {
             }
           ][0].id
         );
-        await addCourseSection(sectionId);
+        if (success) {
+          const success2 = await addCourseSection(sectionId);
+          if (success2) {
+            if (
+              uniqueSectionTypes.indexOf(sectionTypeTab as string) <
+              uniqueSectionTypes.length - 1
+            ) {
+              setSectionTypeTab(
+                uniqueSectionTypes[
+                  uniqueSectionTypes.indexOf(sectionTypeTab as string) + 1
+                ]
+              );
+            }
+          } else {
+            await addCourseSection(
+              selectedSections[
+                type as keyof {
+                  L: { type: string; id: string }[];
+                  P: { type: string; id: string }[];
+                  T: { type: string; id: string }[];
+                }
+              ][0].id
+            );
+          }
+        }
       } else {
-        await addCourseSection(sectionId);
-      }
-      if (
-        uniqueSectionTypes.indexOf(sectionTypeTab as string) <
-        uniqueSectionTypes.length - 1
-      ) {
-        setSectionTypeTab(
-          uniqueSectionTypes[
-            uniqueSectionTypes.indexOf(sectionTypeTab as string) + 1
-          ]
-        );
+        const success = await addCourseSection(sectionId);
+        if (
+          success &&
+          uniqueSectionTypes.indexOf(sectionTypeTab as string) <
+            uniqueSectionTypes.length - 1
+        ) {
+          setSectionTypeTab(
+            uniqueSectionTypes[
+              uniqueSectionTypes.indexOf(sectionTypeTab as string) + 1
+            ]
+          );
+        }
       }
     }
   };
