@@ -193,7 +193,7 @@ const Finalize = () => {
                     </Tooltip>
                     <Input
                       disabled
-                      value={`https://staging.chrono.crux-bphc.com/tt/${id}`}
+                      value={`${import.meta.env.VITE_PROD_URL}/tt/${id}`}
                       className="text-xl ml-0 rounded-none bg-slate-800 ring-slate-700 ring-offset-slate-700 border-slate-700"
                     />
                     <Tooltip delayDuration={100}>
@@ -202,7 +202,7 @@ const Finalize = () => {
                           className="rounded-l-none bg-green-700 hover:bg-green-600 text-green-100 rounded-r-lg px-4 mr-0"
                           onClick={() => {
                             navigator.clipboard.writeText(
-                              `https://staging.chrono.crux-bphc.com/tt/${id}`
+                              `${import.meta.env.VITE_PROD_URL}/tt/${id}`
                             );
                             setCopied(true);
                             setTimeout(() => setCopied(false), 2500);
