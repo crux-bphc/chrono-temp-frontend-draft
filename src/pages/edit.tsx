@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import { useDebounce } from "usehooks-ts";
 import {
   LogOut,
   AlertOctagon,
@@ -153,14 +154,15 @@ const Edit = () => {
   const [isVertical, setIsVertical] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebounce<string>(searchTerm, 500);
   const courseSearchResults = useMemo(
     () =>
-      (searchTerm === ""
+      (debouncedSearchTerm === ""
         ? courseDetails
         : courseDetails.filter((e) =>
             (e.code + ": " + e.name)
               .toLowerCase()
-              .includes(searchTerm.toLowerCase())
+              .includes(debouncedSearchTerm.toLowerCase())
           )
       ).map((e) => {
         const withClash = e as {
@@ -187,7 +189,7 @@ const Edit = () => {
         withClash.clashing = clashes.length === 0 ? null : clashes;
         return withClash;
       }),
-    [courseDetails, searchTerm, timetableDetails.examTimes]
+    [courseDetails, debouncedSearchTerm, timetableDetails.examTimes]
   );
   const addedCourses = useMemo(
     () =>

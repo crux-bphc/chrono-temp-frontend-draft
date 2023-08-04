@@ -462,7 +462,7 @@ const TimetableEditMenu = ({
                         }`}
                       >
                         {course.clashing && (
-                          <div className="absolute left-0 top-8 py-1 bg-slate-900/60 text-center w-full">
+                          <div className="absolute left-0 top-8 py-1 bg-slate-900/80 text-center w-full">
                             <span className="text-slate-200 font-medium text-md">
                               Clashing with{" "}
                               {course.clashing
