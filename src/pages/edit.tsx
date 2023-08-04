@@ -50,13 +50,13 @@ const Edit = () => {
     examTimes: [] as string[],
     sections: [] as {
       id: string;
-      roomTime: string;
+      roomTime: string[];
       courseId: string;
       type: string;
       number: number;
       instructors: string[];
     }[],
-    timings: [],
+    timings: [] as string[],
     warnings: [] as string[],
     lastUpdated: "",
   });
@@ -99,12 +99,60 @@ const Edit = () => {
   );
 
   const classifiedSections = useMemo(() => {
+    const courseSectionsWithClashCheck = courseSections.sections.map((e) => {
+      const withClash = e as {
+        type: string;
+        id: string;
+        number: number;
+        instructors: string[];
+        roomTime: string[];
+        clashing: null | string[];
+      };
+      const existingRoomTimes = timetableDetails.sections.flatMap((e) =>
+        e.roomTime.map(
+          (x) =>
+            e.roomTime[0].split(":")[0] +
+            " " +
+            e.type +
+            e.number +
+            ":" +
+            x.split(":").splice(2).join("")
+        )
+      );
+      const newRoomTimes = withClash.roomTime.map(
+        (x) =>
+          e.roomTime[0].split(":")[0] +
+          " " +
+          e.type +
+          e.number +
+          ":" +
+          x.split(":").splice(2).join("")
+      );
+      const clashes = [
+        ...new Set(
+          existingRoomTimes
+            .filter((x) => {
+              return newRoomTimes
+                .map((y) => y.split(":")[1])
+                .includes(x.split(":")[1]);
+            })
+            .map((x) => x.split(":")[0])
+        ),
+      ];
+      withClash.clashing =
+        clashes.length === 0
+          ? null
+          : clashes[0] === newRoomTimes[0]
+          ? null
+          : clashes;
+      return withClash;
+    });
     return {
-      L: courseSections.sections.filter((e) => e.type === "L"),
-      P: courseSections.sections.filter((e) => e.type === "P"),
-      T: courseSections.sections.filter((e) => e.type === "T"),
+      L: courseSectionsWithClashCheck.filter((e) => e.type === "L"),
+      P: courseSectionsWithClashCheck.filter((e) => e.type === "P"),
+      T: courseSectionsWithClashCheck.filter((e) => e.type === "T"),
     };
-  }, [courseSections]);
+  }, [courseSections.sections, timetableDetails.sections]);
 
   const [isVertical, setIsVertical] = useState(false);
   const timetableGrid = useMemo(() => {
@@ -139,14 +187,39 @@ const Edit = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const courseSearchResults = useMemo(
     () =>
-      searchTerm === ""
+      (searchTerm === ""
         ? courseDetails
         : courseDetails.filter((e) =>
             (e.code + ": " + e.name)
               .toLowerCase()
               .includes(searchTerm.toLowerCase())
-          ),
-    [courseDetails, searchTerm]
+          )
+      ).map((e) => {
+        const withClash = e as {
+          id: string;
+          code: string;
+          name: string;
+          midsemStartTime: string;
+          midsemEndTime: string;
+          compreStartTime: string;
+          compreEndTime: string;
+          clashing: null | string[];
+        };
+        const clashes = timetableDetails.examTimes.filter((x) => {
+          if (x.split("|")[0] === e.code) return false;
+          return (
+            x.includes(
+              withClash.midsemStartTime + "|" + withClash.midsemEndTime
+            ) ||
+            x.includes(
+              withClash.compreStartTime + "|" + withClash.compreEndTime
+            )
+          );
+        });
+        withClash.clashing = clashes.length === 0 ? null : clashes;
+        return withClash;
+      }),
+    [courseDetails, searchTerm, timetableDetails.examTimes]
   );
   const addedCourses = useMemo(
     () =>
@@ -536,7 +609,6 @@ const Edit = () => {
           await fetchCourseSections(e.courseId);
           setSectionTypeTab(e.type);
         } else if (event.detail >= 2) {
-          console.log(e.id);
           await removeCourseSection(e.id);
         }
       } else {
@@ -950,26 +1022,89 @@ const Edit = () => {
                                   }
                                 ].map((section) => (
                                   <div
-                                    onClick={() =>
-                                      handleSectionClick(type, section.id)
-                                    }
-                                    className={`px-4 hover:bg-slate-600/40 transition duration-200 ease-in-out cursor-pointer py-3 border-2 m-2 rounded-lg border-slate-600 items-center flex ${
+                                    onClick={() => {
+                                      if (
+                                        timetableDetails.sections.filter(
+                                          (ttSection) =>
+                                            ttSection.id === section.id
+                                        ).length === 0 &&
+                                        !section.clashing
+                                      ) {
+                                        handleSectionClick(type, section.id);
+                                      }
+                                    }}
+                                    className={`relative px-4 transition duration-200 ease-in-out py-3 border-2 m-2 rounded-lg border-slate-600 items-center flex ${
                                       timetableDetails.sections.filter(
                                         (ttSection) =>
                                           ttSection.id === section.id
                                       ).length > 0
-                                        ? "bg-slate-600"
-                                        : ""
+                                        ? "text-slate-50 cursor-pointer hover:bg-slate-600/40 bg-slate-600"
+                                        : section.clashing
+                                        ? "text-slate-300/40 bg-slate-800/40"
+                                        : "text-slate-50 cursor-pointer hover:bg-slate-600/40"
                                     }`}
                                   >
-                                    <span className="w-fit text-sm text-slate-50">
+                                    {timetableDetails.sections.filter(
+                                      (ttSection) => ttSection.id === section.id
+                                    ).length === 0 &&
+                                      section.clashing && (
+                                        <div className="absolute left-0 bg-slate-800/80 text-center w-full">
+                                          <span className="text-slate-200 font-bold text-md">
+                                            Clashing with{" "}
+                                            {section.clashing.map((y, i) => (
+                                              <>
+                                                <span
+                                                  className="text-blue-400 inline pl-1 items-center cursor-pointer"
+                                                  onClick={(event) => {
+                                                    handleUnitClick(
+                                                      {
+                                                        id: "",
+                                                        type: y
+                                                          .split(" ")[2]
+                                                          .replace(
+                                                            /[0-9]/g,
+                                                            ""
+                                                          ),
+                                                        courseId:
+                                                          courseDetails.filter(
+                                                            (x) =>
+                                                              x.code ===
+                                                              y
+                                                                .split(" ")
+                                                                .splice(0, 2)
+                                                                .join(" ")
+                                                          )[0].id,
+                                                        code: "",
+                                                        instructors: [],
+                                                        number: 0,
+                                                        room: "",
+                                                      },
+                                                      event,
+                                                      false
+                                                    );
+                                                  }}
+                                                >
+                                                  {y}
+                                                  <ArrowUpRightFromCircle className="inline w-3 h-3 ml-1 mr-1" />
+                                                </span>
+                                                {i >= 0 &&
+                                                  i <
+                                                    (section.clashing?.length ??
+                                                      0) -
+                                                      1 && <span>, </span>}
+                                              </>
+                                            ))}
+                                          </span>
+                                        </div>
+                                      )}
+                                    <span className="w-fit text-sm ">
                                       {section.number}
                                     </span>
                                     <div className="flex flex-col pl-4">
-                                      <span className="w-fit text-sm font-semibold text-slate-50">
+                                      <span className="w-fit text-sm font-semibold ">
                                         {section.instructors.join(", ")}
                                       </span>
-                                      <span className="w-fit text-sm pt-1 text-slate-50">
+                                      <span className="w-fit text-sm pt-1">
                                         {section.roomTime
                                           .map((e) =>
                                             e.split(":").splice(1).join(" ")
@@ -1133,11 +1268,35 @@ const Edit = () => {
                               <div className="h-[calc(100vh-20rem)] overflow-y-auto">
                                 {courseSearchResults.map((course) => (
                                   <div
-                                    onClick={() =>
-                                      fetchCourseSections(course.id)
-                                    }
-                                    className="px-4 hover:bg-slate-700 transition flex-col pt-4 flex duration-200 ease-in-out cursor-pointer border-t-2 border-slate-700/60"
+                                    onClick={() => {
+                                      if (!course.clashing) {
+                                        fetchCourseSections(course.id);
+                                      }
+                                    }}
+                                    className={`relative px-4 transition flex-col pt-4 flex duration-200 ease-in-out border-t-2 border-slate-700/60 ${
+                                      course.clashing
+                                        ? "text-slate-400"
+                                        : "cursor-pointer hover:bg-slate-700 text-slate-50"
+                                    }`}
                                   >
+                                    {course.clashing && (
+                                      <div className="absolute left-0 top-8 py-1 bg-slate-900/60 text-center w-full">
+                                        <span className="text-slate-200 font-medium text-md">
+                                          Clashing with{" "}
+                                          {course.clashing
+                                            .map((x) => {
+                                              const [code, exam] = x.split("|");
+                                              return (
+                                                code +
+                                                "'s " +
+                                                exam.toLowerCase()
+                                              );
+                                            })
+                                            .join(", ")}
+                                        </span>
+                                      </div>
+                                    )}
+
                                     <div className="w-full flex justify-between items-center">
                                       <span className="w-fit text-sm">
                                         {course.code}: {course.name}
