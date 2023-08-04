@@ -91,7 +91,6 @@ const Edit = () => {
     () => new Date(timetableDetails.lastUpdated),
     [timetableDetails]
   );
-
   const uniqueSectionTypes = useMemo(
     () =>
       Array.from(new Set(courseSections.sections.map((e) => e.type))).sort(),
@@ -365,7 +364,7 @@ const Edit = () => {
   }, [addedCourses, requiredCourses]);
 
   const navigate = useNavigate();
-  const fetchCourseSections = async (courseId: string) => {
+  const fetchCourseSections = useCallback(async (courseId: string) => {
     const res = await fetch(
       `${import.meta.env.VITE_BACKEND_URL}/course/${courseId}`,
       {
@@ -394,7 +393,8 @@ const Edit = () => {
     } else {
       alert(`Server error: ${json}`);
     }
-  };
+  }, []);
+
   const fetchTimetableDetails = useCallback(async () => {
     const res = await fetch(
       `${import.meta.env.VITE_BACKEND_URL}/timetable/${id}`,
@@ -421,80 +421,90 @@ const Edit = () => {
     }
   }, [id]);
 
-  const addCourseSection = async (sectionId: string) => {
-    if (!interactable) return;
-    setInteractable(false);
-    const res = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/timetable/${id}/add`,
-      {
-        method: "POST",
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          sectionId: sectionId,
-        }),
-        mode: "cors",
-        credentials: "include",
+  const addCourseSection = useCallback(
+    async (sectionId: string) => {
+      if (!interactable) return;
+      setInteractable(false);
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/timetable/${id}/add`,
+        {
+          method: "POST",
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            sectionId: sectionId,
+          }),
+          mode: "cors",
+          credentials: "include",
+        }
+      );
+      const json = await res.json();
+      if (res.status === 200) {
+        await fetchTimetableDetails();
+        setInteractable(true);
+        return true;
+      } else if (res.status === 401) {
+        navigate("/login");
+      } else if (
+        res.status === 400 ||
+        res.status === 404 ||
+        res.status === 403 ||
+        res.status === 418
+      ) {
+        alert(`Error: ${json.message}`);
+      } else if (res.status === 500) {
+        alert(`Server error: ${json.message}`);
+      } else {
+        alert(`Server error: ${json}`);
       }
-    );
-    const json = await res.json();
-    if (res.status === 200) {
-      await fetchTimetableDetails();
       setInteractable(true);
-      return true;
-    } else if (res.status === 401) {
-      navigate("/login");
-    } else if (
-      res.status === 400 ||
-      res.status === 404 ||
-      res.status === 403 ||
-      res.status === 418
-    ) {
-      alert(`Error: ${json.message}`);
-    } else if (res.status === 500) {
-      alert(`Server error: ${json.message}`);
-    } else {
-      alert(`Server error: ${json}`);
-    }
-    setInteractable(true);
-  };
+    },
+    [fetchTimetableDetails, id, interactable, navigate]
+  );
 
-  const removeCourseSection = async (sectionId: string) => {
-    if (!interactable) return;
-    setInteractable(false);
-    const res = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/timetable/${id}/remove`,
-      {
-        method: "POST",
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          sectionId: sectionId,
-        }),
-        mode: "cors",
-        credentials: "include",
+  const removeCourseSection = useCallback(
+    async (sectionId: string) => {
+      if (!interactable) return;
+      setInteractable(false);
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/timetable/${id}/remove`,
+        {
+          method: "POST",
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            sectionId: sectionId,
+          }),
+          mode: "cors",
+          credentials: "include",
+        }
+      );
+      const json = await res.json();
+      if (res.status === 200) {
+        await fetchTimetableDetails();
+        setInteractable(true);
+        return true;
+      } else if (res.status === 401) {
+        navigate("/login");
+      } else if (
+        res.status === 404 ||
+        res.status === 403 ||
+        res.status === 418
+      ) {
+        alert(`Error: ${json.message}`);
+      } else if (res.status === 500) {
+        alert(`Server error: ${json.message}`);
+      } else {
+        alert(`Server error: ${json}`);
       }
-    );
-    const json = await res.json();
-    if (res.status === 200) {
-      await fetchTimetableDetails();
       setInteractable(true);
-      return true;
-    } else if (res.status === 401) {
-      navigate("/login");
-    } else if (res.status === 404 || res.status === 403 || res.status === 418) {
-      alert(`Error: ${json.message}`);
-    } else if (res.status === 500) {
-      alert(`Server error: ${json.message}`);
-    } else {
-      alert(`Server error: ${json}`);
-    }
-    setInteractable(true);
-  };
+    },
+    [fetchTimetableDetails, id, interactable, navigate]
+  );
 
   const selectedSections = useMemo(() => {
     return {
@@ -521,112 +531,128 @@ const Edit = () => {
     timetableDetails.sections,
   ]);
 
-  const handleSectionClick = async (type: string, sectionId: string) => {
-    if (
-      timetableDetails.sections.filter(
-        (ttSection) => ttSection.id === sectionId
-      ).length > 0
-    ) {
-      await removeCourseSection(sectionId);
-    } else {
+  const handleSectionClick = useCallback(
+    async (type: string, sectionId: string) => {
       if (
-        selectedSections[
-          type as keyof {
-            L: { type: string; id: string }[];
-            P: { type: string; id: string }[];
-            T: { type: string; id: string }[];
-          }
-        ].length > 0
+        timetableDetails.sections.filter(
+          (ttSection) => ttSection.id === sectionId
+        ).length > 0
       ) {
-        const success = await removeCourseSection(
+        await removeCourseSection(sectionId);
+      } else {
+        if (
           selectedSections[
             type as keyof {
               L: { type: string; id: string }[];
               P: { type: string; id: string }[];
               T: { type: string; id: string }[];
             }
-          ][0].id
-        );
-        if (success) {
-          const success2 = await addCourseSection(sectionId);
-          if (success2) {
-            if (
-              uniqueSectionTypes.indexOf(sectionTypeTab as string) <
-              uniqueSectionTypes.length - 1
-            ) {
-              setSectionTypeTab(
-                uniqueSectionTypes[
-                  uniqueSectionTypes.indexOf(sectionTypeTab as string) + 1
-                ]
+          ].length > 0
+        ) {
+          const success = await removeCourseSection(
+            selectedSections[
+              type as keyof {
+                L: { type: string; id: string }[];
+                P: { type: string; id: string }[];
+                T: { type: string; id: string }[];
+              }
+            ][0].id
+          );
+          if (success) {
+            const success2 = await addCourseSection(sectionId);
+            if (success2) {
+              if (
+                uniqueSectionTypes.indexOf(sectionTypeTab as string) <
+                uniqueSectionTypes.length - 1
+              ) {
+                setSectionTypeTab(
+                  uniqueSectionTypes[
+                    uniqueSectionTypes.indexOf(sectionTypeTab as string) + 1
+                  ]
+                );
+              }
+            } else {
+              await addCourseSection(
+                selectedSections[
+                  type as keyof {
+                    L: { type: string; id: string }[];
+                    P: { type: string; id: string }[];
+                    T: { type: string; id: string }[];
+                  }
+                ][0].id
               );
             }
-          } else {
-            await addCourseSection(
-              selectedSections[
-                type as keyof {
-                  L: { type: string; id: string }[];
-                  P: { type: string; id: string }[];
-                  T: { type: string; id: string }[];
-                }
-              ][0].id
+          }
+        } else {
+          const success = await addCourseSection(sectionId);
+          if (
+            success &&
+            uniqueSectionTypes.indexOf(sectionTypeTab as string) <
+              uniqueSectionTypes.length - 1
+          ) {
+            setSectionTypeTab(
+              uniqueSectionTypes[
+                uniqueSectionTypes.indexOf(sectionTypeTab as string) + 1
+              ]
             );
           }
         }
-      } else {
-        const success = await addCourseSection(sectionId);
-        if (
-          success &&
-          uniqueSectionTypes.indexOf(sectionTypeTab as string) <
-            uniqueSectionTypes.length - 1
-        ) {
-          setSectionTypeTab(
-            uniqueSectionTypes[
-              uniqueSectionTypes.indexOf(sectionTypeTab as string) + 1
-            ]
-          );
-        }
       }
-    }
-  };
-
-  const handleUnitClick = async (
-    e: null | {
-      id: string;
-      courseId: string;
-      room: string;
-      code: string;
-      type: string;
-      number: number;
-      instructors: string[];
     },
-    event: React.MouseEvent,
-    allowDoubleClick: boolean
-  ) => {
-    if (e !== null) {
-      if (allowDoubleClick) {
-        if (event.detail === 1) {
+    [
+      addCourseSection,
+      removeCourseSection,
+      sectionTypeTab,
+      selectedSections,
+      timetableDetails.sections,
+      uniqueSectionTypes,
+    ]
+  );
+
+  const handleUnitClick = useCallback(
+    async (
+      e: null | {
+        id: string;
+        courseId: string;
+        room: string;
+        code: string;
+        type: string;
+        number: number;
+        instructors: string[];
+      },
+      event: React.MouseEvent,
+      allowDoubleClick: boolean
+    ) => {
+      if (e !== null) {
+        if (allowDoubleClick) {
+          if (event.detail === 1) {
+            setTabState("manage");
+            await fetchCourseSections(e.courseId);
+            setSectionTypeTab(e.type);
+          } else if (event.detail >= 2) {
+            await removeCourseSection(e.id);
+          }
+        } else {
           setTabState("manage");
           await fetchCourseSections(e.courseId);
           setSectionTypeTab(e.type);
-        } else if (event.detail >= 2) {
-          await removeCourseSection(e.id);
         }
-      } else {
-        setTabState("manage");
-        await fetchCourseSections(e.courseId);
-        setSectionTypeTab(e.type);
       }
-    }
-  };
+    },
+    [fetchCourseSections, removeCourseSection]
+  );
 
-  const handleMissingCDCClick = async (courseId: string) => {
-    setTabState("cdcs");
-    if (courseId === "") {
-      setCourseSectionsOpened(false);
-    } else {
-      await fetchCourseSections(courseId);
-    }
-  };
+  const handleMissingCDCClick = useCallback(
+    async (courseId: string) => {
+      setTabState("cdcs");
+      if (courseId === "") {
+        setCourseSectionsOpened(false);
+      } else {
+        await fetchCourseSections(courseId);
+      }
+    },
+    [fetchCourseSections]
+  );
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
