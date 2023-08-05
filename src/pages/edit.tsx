@@ -848,9 +848,10 @@ const Edit = () => {
                               </a>
                             </span>
                             <span className="font-bold pt-2">Error List:</span>
-                            <span className="ml-2">
-                              {cdcNotFoundWarning.map((e) => e.warning)}
-                            </span>
+
+                            {cdcNotFoundWarning.map((e) => (
+                              <span className="ml-2">{e.warning}</span>
+                            ))}
                           </div>
                         </TooltipContent>
                       </Tooltip>
