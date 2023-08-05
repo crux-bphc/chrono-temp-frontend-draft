@@ -10,7 +10,7 @@ import { CookiesProvider } from "react-cookie";
 import View from "./pages/view";
 import About from "./pages/about";
 import CMSOption from "./pages/cmsOption";
-import CMS from "./pages/cms";
+import CMSDashboard from "./pages/cms";
 import CMSExport from "./pages/cmsExport";
 
 const router = createBrowserRouter([
@@ -52,7 +52,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/cms/:id",
-    element: <CMS />,
+    element: <CMSDashboard />,
   },
 ]);
 function App() {

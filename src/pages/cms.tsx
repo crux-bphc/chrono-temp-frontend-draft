@@ -33,7 +33,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 
-const CMS = () => {
+const CMSDashboard = () => {
   const { id } = useParams();
   const [enrolledCourses, setEnrolledCourses] = useState(
     [] as {
@@ -500,7 +500,11 @@ const CMS = () => {
                       </span>
                     </div>
                   )}
-                  <div className={`w-full flex ${allowEdit ? "blur-sm" : ""}`}>
+                  <div
+                    className={`w-full flex ${
+                      allowEdit ? "blur-sm pointer-events-none" : ""
+                    }`}
+                  >
                     {enrolledLoaded ? (
                       <div className="flex flex-col pl-2 text-md py-8 w-1/4">
                         <div className="flex pb-4">
@@ -679,4 +683,4 @@ const CMS = () => {
   );
 };
 
-export default CMS;
+export default CMSDashboard;

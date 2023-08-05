@@ -19,6 +19,7 @@ import {
   ArrowUpRightFromCircle,
   GripHorizontal,
   GripVertical,
+  Trash,
 } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -34,6 +35,17 @@ import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import CDCList from "../../CDCs.json";
 import TimetableEditMenu from "@/components/TimetableEditMenu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const Edit = () => {
   const { id } = useParams();
@@ -656,6 +668,33 @@ const Edit = () => {
   }, [fetchTimetableDetails, id]);
   const [userInfoCookie] = useCookies(["userInfo"]);
 
+  const deleteTimetable = async (id: string) => {
+    const res = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}/timetable/${id}/delete`,
+      {
+        method: "POST",
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+        },
+        mode: "cors",
+        credentials: "include",
+      }
+    );
+    const json = await res.json();
+    if (res.status === 200) {
+      navigate(`/`);
+    } else if (res.status === 401) {
+      navigate("/login");
+    } else if (res.status === 403 || res.status === 404) {
+      alert(`Error: ${json.message}`);
+    } else if (res.status === 500) {
+      alert(`Server error: ${json.message}`);
+    } else {
+      alert(`Server error: ${json}`);
+    }
+  };
+
   return (
     <>
       <div className="flex bg-slate-950 h-screen w-full">
@@ -759,6 +798,46 @@ const Edit = () => {
                             {degree}
                           </Badge>
                         ))}
+                        <Tooltip delayDuration={100}>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <TooltipTrigger asChild>
+                                <Button className="ml-2 mt-[-0.5rem] duration-300 rounded-full bg-slate-950 hover:bg-red-900/60">
+                                  <Trash className="w-6 h-4 text-red-400" />
+                                </Button>
+                              </TooltipTrigger>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent className="bg-slate-800 p-8 border-slate-700 ring-slate-700 ring-offset-slate-700">
+                              <AlertDialogHeader>
+                                <AlertDialogTitle className="font-bold text-2xl text-slate-50">
+                                  Are you sure?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription className="text-lg text-slate-300">
+                                  <span className="font-bold text-red-300">
+                                    All your progress on this timetable will be
+                                    lost, and unrecoverable.
+                                  </span>
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel className="bg-slate-800 hover:bg-slate-700/60 hover:text-slate-200 text-slate-200 border-slate-500 ring-slate-500 ring-offset-slate-500">
+                                  Cancel
+                                </AlertDialogCancel>
+                                <AlertDialogAction
+                                  className="text-red-50 bg-red-900 hover:bg-red-700 border-red-200 ring-red-200 ring-offset-red-200"
+                                  onClick={() => {
+                                    deleteTimetable(id as string);
+                                  }}
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                          <TooltipContent className="bg-slate-900 text-slate-50 border-slate-800">
+                            Delete Timetable
+                          </TooltipContent>
+                        </Tooltip>
                       </div>
                     </div>
                   </div>

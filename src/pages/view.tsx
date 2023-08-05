@@ -16,6 +16,7 @@ import {
   GripVertical,
   GripHorizontal,
   Download,
+  File,
 } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
@@ -49,6 +50,8 @@ const View = () => {
     name: "",
     authorId: "",
     private: false,
+    draft: false,
+    archived: false,
     year: 0,
     semester: 0,
     acadYear: 0,
@@ -279,14 +282,18 @@ const View = () => {
                         </span>
                         <Tooltip delayDuration={100}>
                           <TooltipTrigger asChild>
-                            {timetableDetails.private === true ? (
+                            {timetableDetails.draft === true ? (
+                              <File className="h-5 w-5" />
+                            ) : timetableDetails.private === true ? (
                               <Lock className="h-5 w-5" />
                             ) : (
                               <Globe className="h-5 w-5" />
                             )}
                           </TooltipTrigger>
                           <TooltipContent className="bg-slate-900 text-slate-50 border-slate-800">
-                            {timetableDetails.private === true
+                            {timetableDetails.draft === true
+                              ? "Draft (wait how are you even here?)"
+                              : timetableDetails.private === true
                               ? "Private (only people with link can view)"
                               : "Public (anyone can view)"}
                           </TooltipContent>
@@ -424,6 +431,24 @@ const View = () => {
                   </div>
                   <div className="flex justify-center items-center">
                     {" "}
+                    {!timetableDetails.draft && !timetableDetails.archived && (
+                      <Tooltip delayDuration={100}>
+                        <TooltipTrigger
+                          asChild
+                          className="mr-4 w-fit h-fit hover:bg-slate-700 bg-transparent transition duration-200 ease-in-out"
+                        >
+                          <Button
+                            className="p-2 text-md rounded-lg px-4"
+                            onClick={() => navigate(`/cms/${id}`)}
+                          >
+                            CMS AUTO-ENROLL
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-slate-900 text-slate-50 border-slate-800">
+                          Auto-Enroll sections into CMS
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
                     <Tooltip delayDuration={100}>
                       <TooltipTrigger
                         asChild
