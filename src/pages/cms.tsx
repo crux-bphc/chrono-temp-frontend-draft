@@ -413,7 +413,7 @@ const CMS = () => {
                       <span>
                         To find these details, follow the instructions in{" "}
                         <a
-                          href="https://www.youtube.com/watch?v=6kcmaDBOYRM"
+                          href="https://youtu.be/ls1VsCPRH0I"
                           className="text-blue-400 ml-1 inline items-center"
                         >
                           this quick, 1-minute-long video.
