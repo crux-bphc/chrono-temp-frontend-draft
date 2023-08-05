@@ -534,18 +534,28 @@ const CMS = () => {
                             </TooltipContent>
                           </Tooltip>
                         </div>
-                        {enrolledCourses.map((section) => (
-                          <>
-                            <span className="py-1">
-                              {section.displayname
-                                .replace(/&lt;/g, "<")
-                                .replace(/&gt;/g, ">")
-                                .replace(/&quot;/g, '"')
-                                .replace(/&#39;/g, "'")
-                                .replace(/&amp;/g, "&")}
-                            </span>
-                          </>
-                        ))}
+                        {enrolledCourses
+                          .sort((a, b) => {
+                            if (a.displayname < b.displayname) {
+                              return -1;
+                            }
+                            if (a.displayname > b.displayname) {
+                              return 1;
+                            }
+                            return 0;
+                          })
+                          .map((section) => (
+                            <>
+                              <span className="py-1">
+                                {section.displayname
+                                  .replace(/&lt;/g, "<")
+                                  .replace(/&gt;/g, ">")
+                                  .replace(/&quot;/g, '"')
+                                  .replace(/&#39;/g, "'")
+                                  .replace(/&amp;/g, "&")}
+                              </span>
+                            </>
+                          ))}
                         {enrolledCourses.length === 0 && (
                           <>
                             <div className="flex flex-col items-center">
@@ -594,8 +604,15 @@ const CMS = () => {
                             </TooltipContent>
                           </Tooltip>
                         </div>
-                        {sectionNameList.map((section) => (
-                          <span className="py-1">{section}</span>
+                        {sectionNameList.sort().map((section) => (
+                          <span className="py-1">
+                            {section
+                              .replace(/&lt;/g, "<")
+                              .replace(/&gt;/g, ">")
+                              .replace(/&quot;/g, '"')
+                              .replace(/&#39;/g, "'")
+                              .replace(/&amp;/g, "&")}
+                          </span>
                         ))}
                         {sectionNameList.length === 0 && (
                           <>
@@ -632,8 +649,15 @@ const CMS = () => {
                             </TooltipContent>
                           </Tooltip>
                         </div>
-                        {errors.map((section) => (
-                          <span className="py-1">{section}</span>
+                        {errors.sort().map((section) => (
+                          <span className="py-1">
+                            {section
+                              .replace(/&lt;/g, "<")
+                              .replace(/&gt;/g, ">")
+                              .replace(/&quot;/g, '"')
+                              .replace(/&#39;/g, "'")
+                              .replace(/&amp;/g, "&")}
+                          </span>
                         ))}
                       </div>
                     )}
