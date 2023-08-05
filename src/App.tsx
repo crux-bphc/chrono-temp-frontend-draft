@@ -9,6 +9,9 @@ import Finalize from "./pages/finalize";
 import { CookiesProvider } from "react-cookie";
 import View from "./pages/view";
 import About from "./pages/about";
+import CMSOption from "./pages/cmsOption";
+import CMS from "./pages/cms";
+import CMSExport from "./pages/cmsExport";
 
 const router = createBrowserRouter([
   {
@@ -38,6 +41,18 @@ const router = createBrowserRouter([
   {
     path: "/finalize/:id",
     element: <Finalize />,
+  },
+  {
+    path: "/cmsoption/:id",
+    element: <CMSOption />,
+  },
+  {
+    path: "/cmsExport",
+    element: <CMSExport />,
+  },
+  {
+    path: "/cms/:id",
+    element: <CMS />,
   },
 ]);
 function App() {

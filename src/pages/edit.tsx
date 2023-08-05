@@ -648,8 +648,11 @@ const Edit = () => {
         alert(`Server error: ${json}`);
       }
     };
-    fetchTimetableDetails();
     fetchCourseDetails();
+  }, []);
+
+  useEffect(() => {
+    fetchTimetableDetails();
   }, [fetchTimetableDetails, id]);
   const [userInfoCookie] = useCookies(["userInfo"]);
 

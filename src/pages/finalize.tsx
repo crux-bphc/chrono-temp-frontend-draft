@@ -91,7 +91,7 @@ const Finalize = () => {
     );
     const json = await res.json();
     if (res.status === 200) {
-      navigate("/");
+      navigate("/cmsOption/" + id);
     } else if (res.status === 401) {
       navigate("/login");
     } else if (res.status === 400 || res.status === 403 || res.status === 404) {
