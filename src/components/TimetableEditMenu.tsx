@@ -319,13 +319,15 @@ const TimetableEditMenu = ({
               >
                 CDCs
               </TabsTrigger>
-              <TabsTrigger
-                value="search"
-                onClick={() => setTabState("search")}
-                className="data-[state=active]:bg-slate-800 pt-3 pb-2 mb-[-0.5rem] ring-slate-700 ring-offset-slate-700 bg-slate-900 hover:bg-slate-800/60 duration-200 font-bold w-full text-md rounded-b-none rounded-t-xl data-[state=active]:text-slate-100"
-              >
-                Search
-              </TabsTrigger>
+              {timetableDetails.year !== 1 && (
+                <TabsTrigger
+                  value="search"
+                  onClick={() => setTabState("search")}
+                  className="data-[state=active]:bg-slate-800 pt-3 pb-2 mb-[-0.5rem] ring-slate-700 ring-offset-slate-700 bg-slate-900 hover:bg-slate-800/60 duration-200 font-bold w-full text-md rounded-b-none rounded-t-xl data-[state=active]:text-slate-100"
+                >
+                  Search
+                </TabsTrigger>
+              )}
               <TabsTrigger
                 value="manage"
                 onClick={() => setTabState("manage")}
@@ -419,133 +421,148 @@ const TimetableEditMenu = ({
                       </>
                     );
                   })}
-                {requiredCourses.length === 0 && (
+                {requiredCourses.filter(
+                  (course) =>
+                    course.id !== null ||
+                    (course.id === null && course.type === "optional")
+                ).length === 0 && (
                   <div className="flex flex-col justify-center items-center bg-slate-800 h-full rounded-xl">
                     <Bird className="text-slate-400 w-36 h-36 mb-4" />
                     <span className="text-slate-400 text-2xl">
                       No CDCs for this semester
                     </span>
-                    <Button
-                      onClick={() => setTabState("search")}
-                      className="text-green-200 w-fit text-2xl p-4 mt-8 bg-green-900 hover:bg-green-800"
-                    >
-                      Search for courses
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </TabsContent>
-            <TabsContent
-              value="search"
-              className="ring-slate-700 ring-offset-slate-700 bg-slate-800/40"
-            >
-              <div className="pt-1">
-                <Input
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search Courses"
-                  className="mx-4 my-2 w-[22rem] text-md p-2 bg-slate-900/80 ring-slate-700 ring-offset-slate-700 border-slate-700/60"
-                />
-                {coursesLoaded ? (
-                  <div className="h-[calc(100vh-20rem)] overflow-y-auto">
-                    {courseSearchResults.map((course) => (
-                      <div
-                        onClick={() => {
-                          if (!course.clashing) {
-                            fetchCourseSections(course.id);
-                          }
-                        }}
-                        className={`relative px-4 transition flex-col pt-4 flex duration-200 ease-in-out border-t-2 border-slate-700/60 ${
-                          course.clashing
-                            ? "text-slate-400"
-                            : "cursor-pointer hover:bg-slate-700 text-slate-50"
-                        }`}
+                    {timetableDetails.year === 1 ? (
+                      <a
+                        href="https://github.com/crux-bphc/chronofactorem-rewrite/issues"
+                        className="text-green-200 cursor-pointer rounded-md py-2 w-fit text-2xl px-4 font-bold transition duration-200 ease-in-out mt-8 bg-green-900 hover:bg-green-800"
                       >
-                        {course.clashing && (
-                          <div className="absolute left-0 top-8 py-1 bg-slate-900/80 text-center w-full">
-                            <span className="text-slate-200 font-medium text-md">
-                              Clashing with{" "}
-                              {course.clashing
-                                .map((x) => {
-                                  const [code, exam] = x.split("|");
-                                  return code + "'s " + exam.toLowerCase();
-                                })
-                                .join(", ")}
-                            </span>
-                          </div>
-                        )}
-
-                        <div className="w-full flex justify-between items-center">
-                          <span className="w-fit text-sm">
-                            {course.code}: {course.name}
-                          </span>
-                          <ChevronRight className="w-6 h-6" />
-                        </div>
-
-                        <div>
-                          <span className="pl-4 py-1 text-sm font-bold">
-                            Midsem
-                          </span>
-                          <span className="pl-4 py-1 text-sm">
-                            {`${new Date(
-                              course.midsemStartTime
-                            ).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                              hour: "numeric",
-                              minute: "numeric",
-                              hour12: true,
-                            })} — ${new Date(
-                              course.midsemEndTime
-                            ).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                              hour: "numeric",
-                              minute: "numeric",
-                              hour12: true,
-                            })}`}
-                          </span>
-                        </div>
-                        <div className="pb-4">
-                          <span className="pl-4 py-1 text-sm font-bold">
-                            Compre
-                          </span>
-                          <span className="pl-4 py-1 text-sm">
-                            {`${new Date(
-                              course.compreStartTime
-                            ).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                              hour: "numeric",
-                              minute: "numeric",
-                              hour12: true,
-                            })} — ${new Date(
-                              course.compreEndTime
-                            ).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                              hour: "numeric",
-                              minute: "numeric",
-                              hour12: true,
-                            })}`}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                    {courseSearchResults.length === 0 && (
-                      <div className="flex flex-col justify-center items-center bg-slate-800/40 h-full rounded-xl">
-                        <Bird className="text-slate-300 w-36 h-36 mb-4" />
-                        <span className="text-slate-300 text-2xl">
-                          No results
-                        </span>
-                      </div>
+                        Report this issue
+                      </a>
+                    ) : (
+                      <Button
+                        onClick={() => setTabState("search")}
+                        className="text-green-200 w-fit text-2xl p-4 mt-8 bg-green-900 hover:bg-green-800"
+                      >
+                        Search for courses
+                      </Button>
                     )}
                   </div>
-                ) : (
-                  <Spinner />
                 )}
               </div>
             </TabsContent>
+            {timetableDetails.year !== 1 && (
+              <TabsContent
+                value="search"
+                className="ring-slate-700 ring-offset-slate-700 bg-slate-800/40"
+              >
+                <div className="pt-1">
+                  <Input
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Search Courses"
+                    className="mx-4 my-2 w-[22rem] text-md p-2 bg-slate-900/80 ring-slate-700 ring-offset-slate-700 border-slate-700/60"
+                  />
+                  {coursesLoaded ? (
+                    <div className="h-[calc(100vh-20rem)] overflow-y-auto">
+                      {courseSearchResults.map((course) => (
+                        <div
+                          onClick={() => {
+                            if (!course.clashing) {
+                              fetchCourseSections(course.id);
+                            }
+                          }}
+                          className={`relative px-4 transition flex-col pt-4 flex duration-200 ease-in-out border-t-2 border-slate-700/60 ${
+                            course.clashing
+                              ? "text-slate-400"
+                              : "cursor-pointer hover:bg-slate-700 text-slate-50"
+                          }`}
+                        >
+                          {course.clashing && (
+                            <div className="absolute left-0 top-8 py-1 bg-slate-900/80 text-center w-full">
+                              <span className="text-slate-200 font-medium text-md">
+                                Clashing with{" "}
+                                {course.clashing
+                                  .map((x) => {
+                                    const [code, exam] = x.split("|");
+                                    return code + "'s " + exam.toLowerCase();
+                                  })
+                                  .join(", ")}
+                              </span>
+                            </div>
+                          )}
+
+                          <div className="w-full flex justify-between items-center">
+                            <span className="w-fit text-sm">
+                              {course.code}: {course.name}
+                            </span>
+                            <ChevronRight className="w-6 h-6" />
+                          </div>
+
+                          <div>
+                            <span className="pl-4 py-1 text-sm font-bold">
+                              Midsem
+                            </span>
+                            <span className="pl-4 py-1 text-sm">
+                              {`${new Date(
+                                course.midsemStartTime
+                              ).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                hour: "numeric",
+                                minute: "numeric",
+                                hour12: true,
+                              })} — ${new Date(
+                                course.midsemEndTime
+                              ).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                hour: "numeric",
+                                minute: "numeric",
+                                hour12: true,
+                              })}`}
+                            </span>
+                          </div>
+                          <div className="pb-4">
+                            <span className="pl-4 py-1 text-sm font-bold">
+                              Compre
+                            </span>
+                            <span className="pl-4 py-1 text-sm">
+                              {`${new Date(
+                                course.compreStartTime
+                              ).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                hour: "numeric",
+                                minute: "numeric",
+                                hour12: true,
+                              })} — ${new Date(
+                                course.compreEndTime
+                              ).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                hour: "numeric",
+                                minute: "numeric",
+                                hour12: true,
+                              })}`}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                      {courseSearchResults.length === 0 && (
+                        <div className="flex flex-col justify-center items-center bg-slate-800/40 h-full rounded-xl">
+                          <Bird className="text-slate-300 w-36 h-36 mb-4" />
+                          <span className="text-slate-300 text-2xl">
+                            No results
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <Spinner />
+                  )}
+                </div>
+              </TabsContent>
+            )}
             <TabsContent
               value="manage"
               className="ring-slate-700 ring-offset-slate-700 bg-slate-800/40"
@@ -569,7 +586,11 @@ const TimetableEditMenu = ({
                       Nothing to manage.
                     </span>
                     <Button
-                      onClick={() => setTabState("search")}
+                      onClick={() =>
+                        setTabState(
+                          timetableDetails.year === 1 ? "cdcs" : "search"
+                        )
+                      }
                       className="text-green-200 w-fit text-2xl p-4 mt-8 bg-green-800 hover:bg-green-700"
                     >
                       Add a course
@@ -590,7 +611,11 @@ const TimetableEditMenu = ({
                       No exams to worry about.
                     </span>
                     <Button
-                      onClick={() => setTabState("search")}
+                      onClick={() =>
+                        setTabState(
+                          timetableDetails.year === 1 ? "cdcs" : "search"
+                        )
+                      }
                       className="text-green-200 w-fit text-2xl p-4 mt-8 bg-green-800 hover:bg-green-700"
                     >
                       Add a course
