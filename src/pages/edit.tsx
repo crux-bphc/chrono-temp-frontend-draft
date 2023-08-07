@@ -374,7 +374,7 @@ const Edit = () => {
     } else if (res.status === 500) {
       alert(`Server error: ${json.message}`);
     } else {
-      alert(`Server error: ${json}`);
+      alert(`Server error: ${JSON.stringify(json)}`);
     }
   }, []);
 
@@ -400,7 +400,7 @@ const Edit = () => {
     } else if (res.status === 500) {
       alert(`Server error: ${json.message}`);
     } else {
-      alert(`Server error: ${json}`);
+      alert(`Server error: ${JSON.stringify(json)}`);
     }
   }, [id]);
 
@@ -691,7 +691,7 @@ const Edit = () => {
     } else if (res.status === 500) {
       alert(`Server error: ${json.message}`);
     } else {
-      alert(`Server error: ${json}`);
+      alert(`Server error: ${JSON.stringify(json)}`);
     }
   };
 

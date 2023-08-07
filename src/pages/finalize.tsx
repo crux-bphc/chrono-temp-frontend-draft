@@ -99,7 +99,7 @@ const Finalize = () => {
     } else if (res.status === 500) {
       alert(`Server error: ${json.message}`);
     } else {
-      alert(`Server error: ${json}`);
+      alert(`Server error: ${JSON.stringify(json)}`);
     }
   };
   const [userInfoCookie] = useCookies(["userInfo"]);
