@@ -52,10 +52,10 @@ const CMSDashboard = () => {
       id: string;
       code: string;
       name: string;
-      midsemStartTime: string;
-      midsemEndTime: string;
-      compreStartTime: string;
-      compreEndTime: string;
+      midsemStartTime: string | null;
+      midsemEndTime: string | null;
+      compreStartTime: string | null;
+      compreEndTime: string | null;
     }[]
   >([]);
   const [allowEdit, setAllowEdit] = useState(true);

@@ -202,11 +202,12 @@ const View = () => {
         }
       );
       const json = await res.json();
-      if (res.status === 200) {
+      if (res.status === 200 && json.draft === false) {
         setIsLoaded(true);
         setTimetableDetails(json);
-      } else if (res.status === 404) {
+      } else if (res.status === 404 || json.draft === true) {
         alert(`Error: ${json.message}`);
+        navigate(`/`);
       } else if (res.status === 500) {
         alert(`Server error: ${json.message}`);
       } else {
@@ -214,7 +215,7 @@ const View = () => {
       }
     };
     fetchTimetableDetails();
-  }, [id]);
+  }, [id, navigate]);
 
   const [userInfoCookie] = useCookies(["userInfo"]);
 

@@ -91,10 +91,10 @@ const Edit = () => {
       id: string;
       code: string;
       name: string;
-      midsemStartTime: string;
-      midsemEndTime: string;
-      compreStartTime: string;
-      compreEndTime: string;
+      midsemStartTime: string | null;
+      midsemEndTime: string | null;
+      compreStartTime: string | null;
+      compreEndTime: string | null;
     }[]
   >([]);
   const lastUpdatedDate = useMemo(
@@ -181,12 +181,34 @@ const Edit = () => {
           id: string;
           code: string;
           name: string;
-          midsemStartTime: string;
-          midsemEndTime: string;
-          compreStartTime: string;
-          compreEndTime: string;
+          midsemStartTime: string | null;
+          midsemEndTime: string | null;
+          compreStartTime: string | null;
+          compreEndTime: string | null;
           clashing: null | string[];
         };
+        if (e.midsemStartTime === null && e.compreStartTime === null) {
+          withClash.clashing = null;
+          return withClash;
+        } else if (e.midsemStartTime === null && e.compreStartTime !== null) {
+          const clashes = timetableDetails.examTimes.filter((x) => {
+            if (x.split("|")[0] === e.code) return false;
+            return x.includes(
+              withClash.compreStartTime + "|" + withClash.compreEndTime
+            );
+          });
+          withClash.clashing = clashes.length === 0 ? null : clashes;
+          return withClash;
+        } else if (e.midsemStartTime !== null && e.compreStartTime === null) {
+          const clashes = timetableDetails.examTimes.filter((x) => {
+            if (x.split("|")[0] === e.code) return false;
+            return x.includes(
+              withClash.midsemStartTime + "|" + withClash.midsemStartTime
+            );
+          });
+          withClash.clashing = clashes.length === 0 ? null : clashes;
+          return withClash;
+        }
         const clashes = timetableDetails.examTimes.filter((x) => {
           if (x.split("|")[0] === e.code) return false;
           return (
@@ -377,6 +399,7 @@ const Edit = () => {
       alert(`Server error: ${JSON.stringify(json)}`);
     }
   }, []);
+  const [userInfoCookie] = useCookies(["userInfo"]);
 
   const fetchTimetableDetails = useCallback(async () => {
     const res = await fetch(
@@ -393,8 +416,16 @@ const Edit = () => {
     );
     const json = await res.json();
     if (res.status === 200) {
-      setIsLoaded(true);
-      setTimetableDetails(json);
+      if (
+        userInfoCookie["userInfo"] &&
+        json.authorId === userInfoCookie["userInfo"].id
+      ) {
+        setIsLoaded(true);
+        setTimetableDetails(json);
+      } else {
+        alert("Error: You are not authorized to edit this timetable");
+        navigate(`/view/${id}`);
+      }
     } else if (res.status === 404) {
       alert(`Error: ${json.message}`);
     } else if (res.status === 500) {
@@ -402,7 +433,7 @@ const Edit = () => {
     } else {
       alert(`Server error: ${JSON.stringify(json)}`);
     }
-  }, [id]);
+  }, [id, navigate, userInfoCookie]);
 
   const addCourseSection = useCallback(
     async (sectionId: string) => {
@@ -666,7 +697,6 @@ const Edit = () => {
   useEffect(() => {
     fetchTimetableDetails();
   }, [fetchTimetableDetails, id]);
-  const [userInfoCookie] = useCookies(["userInfo"]);
 
   const deleteTimetable = async (id: string) => {
     const res = await fetch(

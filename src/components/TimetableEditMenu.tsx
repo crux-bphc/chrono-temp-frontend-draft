@@ -6,6 +6,7 @@ import {
   ArrowLeft,
   ArrowUpRightFromCircle,
   Bird,
+  HelpCircle,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -117,10 +118,10 @@ const TimetableEditMenu = ({
     id: string;
     code: string;
     name: string;
-    midsemStartTime: string;
-    midsemEndTime: string;
-    compreStartTime: string;
-    compreEndTime: string;
+    midsemStartTime: string | null;
+    midsemEndTime: string | null;
+    compreStartTime: string | null;
+    compreEndTime: string | null;
   }[];
   tabState: string;
   setTabState: React.Dispatch<React.SetStateAction<string>>;
@@ -129,10 +130,10 @@ const TimetableEditMenu = ({
         id: string;
         code: string;
         name: string;
-        midsemStartTime: string;
-        midsemEndTime: string;
-        compreStartTime: string;
-        compreEndTime: string;
+        midsemStartTime: string | null;
+        midsemEndTime: string | null;
+        compreStartTime: string | null;
+        compreEndTime: string | null;
       }
     | {
         id: null;
@@ -147,10 +148,10 @@ const TimetableEditMenu = ({
           id: string;
           code: string;
           name: string;
-          midsemStartTime: string;
-          midsemEndTime: string;
-          compreStartTime: string;
-          compreEndTime: string;
+          midsemStartTime: string | null;
+          midsemEndTime: string | null;
+          compreStartTime: string | null;
+          compreEndTime: string | null;
         }[];
         warning?: undefined;
       }
@@ -163,20 +164,20 @@ const TimetableEditMenu = ({
     id: string;
     code: string;
     name: string;
-    midsemStartTime: string;
-    midsemEndTime: string;
-    compreStartTime: string;
-    compreEndTime: string;
+    midsemStartTime: string | null;
+    midsemEndTime: string | null;
+    compreStartTime: string | null;
+    compreEndTime: string | null;
     clashing: null | string[];
   }[];
   addedCourses: {
     id: string;
     code: string;
     name: string;
-    midsemStartTime: string;
-    midsemEndTime: string;
-    compreStartTime: string;
-    compreEndTime: string;
+    midsemStartTime: string | null;
+    midsemEndTime: string | null;
+    compreStartTime: string | null;
+    compreEndTime: string | null;
   }[];
 }) => {
   return (
@@ -403,10 +404,13 @@ const TimetableEditMenu = ({
                                 <div className="w-full flex justify-center font-bold text-lg">
                                   <Tooltip delayDuration={100}>
                                     <TooltipTrigger asChild>
-                                      <span className="text-slate-50 z-20">
-                                        <div className="absolute border-2 border-slate-50 w-12 mt-[-0.1rem] ml-[-0.75rem] h-8 rounded-full"></div>
-                                        OR
-                                      </span>
+                                      <>
+                                        {" "}
+                                        <div className="absolute border-2 border-slate-50 w-12 mt-[-0.1rem] h-8 rounded-full"></div>
+                                        <span className="text-slate-50 z-20">
+                                          OR
+                                        </span>
+                                      </>
                                     </TooltipTrigger>
                                     <TooltipContent className="bg-slate-900 text-slate-50 border-slate-800">
                                       You have to pick only one of these options
@@ -503,23 +507,47 @@ const TimetableEditMenu = ({
                               Midsem
                             </span>
                             <span className="pl-4 py-1 text-sm">
-                              {`${new Date(
+                              {`${
                                 course.midsemStartTime
-                              ).toLocaleDateString("en-US", {
-                                month: "short",
-                                day: "numeric",
-                                hour: "numeric",
-                                minute: "numeric",
-                                hour12: true,
-                              })} — ${new Date(
+                                  ? new Date(
+                                      course.midsemStartTime
+                                    ).toLocaleDateString("en-US", {
+                                      month: "short",
+                                      day: "numeric",
+                                      hour: "numeric",
+                                      minute: "numeric",
+                                      hour12: true,
+                                    })
+                                  : "N/A"
+                              } — ${
                                 course.midsemEndTime
-                              ).toLocaleDateString("en-US", {
-                                month: "short",
-                                day: "numeric",
-                                hour: "numeric",
-                                minute: "numeric",
-                                hour12: true,
-                              })}`}
+                                  ? new Date(
+                                      course.midsemEndTime
+                                    ).toLocaleDateString("en-US", {
+                                      month: "short",
+                                      day: "numeric",
+                                      hour: "numeric",
+                                      minute: "numeric",
+                                      hour12: true,
+                                    })
+                                  : "N/A"
+                              }`}
+                              {course.midsemStartTime === null && (
+                                <Tooltip delayDuration={100}>
+                                  <TooltipTrigger asChild>
+                                    <div className="inline bg-transparent w-fit rounded-full hover:bg-slate-800/80 text-slate-100 p-1 transition duration-200 ease-in-out ml-2 text-sm font-bold">
+                                      <HelpCircle className="inline h-4 w-4" />
+                                    </div>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="w-96 bg-slate-700 text-slate-50 border-slate-600 text-md">
+                                    Timetable Division hasn't published the
+                                    midsem dates for this course. Either there
+                                    is no midsem exam, or they haven't decided
+                                    it yet. We recommend checking with your
+                                    professor.
+                                  </TooltipContent>
+                                </Tooltip>
+                              )}
                             </span>
                           </div>
                           <div className="pb-4">
@@ -527,23 +555,47 @@ const TimetableEditMenu = ({
                               Compre
                             </span>
                             <span className="pl-4 py-1 text-sm">
-                              {`${new Date(
+                              {`${
                                 course.compreStartTime
-                              ).toLocaleDateString("en-US", {
-                                month: "short",
-                                day: "numeric",
-                                hour: "numeric",
-                                minute: "numeric",
-                                hour12: true,
-                              })} — ${new Date(
+                                  ? new Date(
+                                      course.compreStartTime
+                                    ).toLocaleDateString("en-US", {
+                                      month: "short",
+                                      day: "numeric",
+                                      hour: "numeric",
+                                      minute: "numeric",
+                                      hour12: true,
+                                    })
+                                  : "N/A"
+                              } — ${
                                 course.compreEndTime
-                              ).toLocaleDateString("en-US", {
-                                month: "short",
-                                day: "numeric",
-                                hour: "numeric",
-                                minute: "numeric",
-                                hour12: true,
-                              })}`}
+                                  ? new Date(
+                                      course.compreEndTime
+                                    ).toLocaleDateString("en-US", {
+                                      month: "short",
+                                      day: "numeric",
+                                      hour: "numeric",
+                                      minute: "numeric",
+                                      hour12: true,
+                                    })
+                                  : "N/A"
+                              }`}
+                              {course.compreStartTime === null && (
+                                <Tooltip delayDuration={100}>
+                                  <TooltipTrigger asChild>
+                                    <div className="inline bg-transparent w-fit rounded-full hover:bg-slate-800/80 text-slate-100 p-1 transition duration-200 ease-in-out ml-2 text-sm font-bold">
+                                      <HelpCircle className="inline h-4 w-4" />
+                                    </div>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="w-96 bg-slate-700 text-slate-50 border-slate-600 text-md">
+                                    Timetable Division hasn't published the
+                                    compre dates for this course. Either there
+                                    is no compre exam, or they haven't decided
+                                    it yet. We recommend checking with your
+                                    professor.
+                                  </TooltipContent>
+                                </Tooltip>
+                              )}
                             </span>
                           </div>
                         </div>
