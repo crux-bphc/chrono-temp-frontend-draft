@@ -589,57 +589,58 @@ const View = () => {
                   </div>
                   <div className="ml-4 flex w-full">
                     {isVertical ? (
-                      <div className="flex flex-col justify-between w-28 mr-2 mt-11 text-md text-center text-slate-500 grid-rows-11">
-                        <div className="mb-4 flex items-center justify-between w-full">
-                          <span className="text-slate-600">8 - 9AM</span>
-                          <span className="font-bold">1</span>
-                        </div>
-                        <div className="mb-4 flex items-center justify-between w-full">
-                          <span className="text-slate-600">9 - 10AM</span>
-                          <span className="font-bold">2</span>
-                        </div>
-                        <div className="mb-4 flex items-center justify-between w-full">
-                          <span className="text-slate-600">10 - 11AM</span>
-                          <span className="font-bold">3</span>
-                        </div>
-                        <div className="mb-4 flex items-center justify-between w-full">
-                          <span className="text-slate-600">11 - 12PM</span>
-                          <span className="font-bold">4</span>
-                        </div>
-                        <div className="mb-4 flex items-center justify-between w-full">
-                          <span className="text-slate-600">12 - 1PM</span>
-                          <span className="font-bold">5</span>
-                        </div>
-                        <div className="mb-4 flex items-center justify-between w-full">
-                          <span className="text-slate-600">1 - 2PM</span>
-                          <span className="font-bold">6</span>
-                        </div>
-                        <div className="mb-4 flex items-center justify-between w-full">
-                          <span className="text-slate-600">2 - 3PM</span>
-                          <span className="font-bold">7</span>
-                        </div>
-                        <div className="mb-4 flex items-center justify-between w-full">
-                          <span className="text-slate-600">3 - 4PM</span>
-                          <span className="font-bold">8</span>
-                        </div>
-                        <div className="mb-4 flex items-center justify-between w-full">
-                          <span className="text-slate-600">4 - 5PM</span>
-                          <span className="font-bold">9</span>
-                        </div>
-                        <div className="mb-4 flex items-center justify-between w-full">
-                          <span className="text-slate-600">5 - 6PM</span>
-                          <span className="font-bold">10</span>
-                        </div>
-                        <div className="mb-5 flex items-center justify-between w-full">
-                          <span className="text-slate-600">6 - 7PM</span>
-                          <span className="font-bold">11</span>
-                        </div>
-                        {/* <div className="mb-4 flex flex-col">
-                        <span className="font-bold">12</span>
-                        <span className="text-slate-600">7 - 8PM</span>
-                      </div> */}
-                      </div>
+                      <div></div>
                     ) : (
+                      // <div className="flex flex-col justify-between w-28 mr-2 mt-11 text-md text-center text-slate-500 grid-rows-11">
+                      //   <div className="mb-4 flex items-center justify-between w-full">
+                      //     <span className="text-slate-600">8 - 9AM</span>
+                      //     <span className="font-bold">1</span>
+                      //   </div>
+                      //   <div className="mb-4 flex items-center justify-between w-full">
+                      //     <span className="text-slate-600">9 - 10AM</span>
+                      //     <span className="font-bold">2</span>
+                      //   </div>
+                      //   <div className="mb-4 flex items-center justify-between w-full">
+                      //     <span className="text-slate-600">10 - 11AM</span>
+                      //     <span className="font-bold">3</span>
+                      //   </div>
+                      //   <div className="mb-4 flex items-center justify-between w-full">
+                      //     <span className="text-slate-600">11 - 12PM</span>
+                      //     <span className="font-bold">4</span>
+                      //   </div>
+                      //   <div className="mb-4 flex items-center justify-between w-full">
+                      //     <span className="text-slate-600">12 - 1PM</span>
+                      //     <span className="font-bold">5</span>
+                      //   </div>
+                      //   <div className="mb-4 flex items-center justify-between w-full">
+                      //     <span className="text-slate-600">1 - 2PM</span>
+                      //     <span className="font-bold">6</span>
+                      //   </div>
+                      //   <div className="mb-4 flex items-center justify-between w-full">
+                      //     <span className="text-slate-600">2 - 3PM</span>
+                      //     <span className="font-bold">7</span>
+                      //   </div>
+                      //   <div className="mb-4 flex items-center justify-between w-full">
+                      //     <span className="text-slate-600">3 - 4PM</span>
+                      //     <span className="font-bold">8</span>
+                      //   </div>
+                      //   <div className="mb-4 flex items-center justify-between w-full">
+                      //     <span className="text-slate-600">4 - 5PM</span>
+                      //     <span className="font-bold">9</span>
+                      //   </div>
+                      //   <div className="mb-4 flex items-center justify-between w-full">
+                      //     <span className="text-slate-600">5 - 6PM</span>
+                      //     <span className="font-bold">10</span>
+                      //   </div>
+                      //   <div className="mb-5 flex items-center justify-between w-full">
+                      //     <span className="text-slate-600">6 - 7PM</span>
+                      //     <span className="font-bold">11</span>
+                      //   </div>
+                      //   {/* <div className="mb-4 flex flex-col">
+                      //   <span className="font-bold">12</span>
+                      //   <span className="text-slate-600">7 - 8PM</span>
+                      // </div> */}
+                      // </div>
                       <div
                         className={`grid items-center pr-2 text-lg text-center font-bold ${
                           isVertical ? "grid-cols-6" : "grid-rows-6 mt-12"
