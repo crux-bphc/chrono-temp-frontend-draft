@@ -16,7 +16,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd /home/ubuntu/clones
-            cd chrono-temp-frontend-staging
+            cd chrono-temp-frontend-draft
             git reset --hard HEAD
             git pull
             docker compose down
